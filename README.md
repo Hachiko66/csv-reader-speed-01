@@ -25,6 +25,11 @@ with `run`, and writes `/output/answers.json`.
   after it re-read as unquoted, short rows are padded and long rows cut to
   the first record's width, and every error carries the line its record
   starts on and its index in `rows`.
+- `main.ts` also tunes V8 for a run that happens once per process, cold:
+  `--no-opt` (the optimizing compiler's compile cost is only repaid over
+  repeated hot runs) and `--no-incremental-marking`, beside the roomier
+  young generation. Measured about 10% faster than the semi-space flag
+  alone on the practice set, with byte-identical answers.
 
 ## Verification
 
