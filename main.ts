@@ -17,6 +17,13 @@ import { setFlagsFromString } from 'node:v8';
 // collections measurably lower its CPU time (the house baseline tunes V8's
 // flags the same way, and an entry may tune them too).
 setFlagsFromString('--max-semi-space-size=128');
+// The harness runs this program once per process, cold: the optimizing
+// compiler's compile cost is only repaid over repeated hot runs, so skipping
+// it (and incremental marking) lowers this run's CPU time. Measured on the
+// practice set at about 10% faster than the semi-space flag alone. The code
+// still computes the same answers; only how it is compiled changes.
+setFlagsFromString('--no-opt');
+setFlagsFromString('--no-incremental-marking');
 
 /** run(input) from solve.js, the module this driver answers with. */
 const { run } = (await import(new URL('./solve.js', import.meta.url).href)) as {
